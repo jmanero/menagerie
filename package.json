@@ -1,0 +1,21 @@
+{
+  "name": "cranial",
+  "version": "0.0.1",
+  "description": "Distributed, highly available discovery and environment data service for your distributed, highly available platform",
+  "main": "bin/server.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:jmanero/cranial.git"
+  },
+  "keywords": [
+    "distributed",
+    "service",
+    "discovery"
+  ],
+  "author": "John Manero <john.manero@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jmanero/cranial/issues"
+  },
+  "homepage": "https://github.com/jmanero/cranial"
+}
