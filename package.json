@@ -1,6 +1,6 @@
 {
   "name": "cranial",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Distributed, highly available discovery and environment data service for your distributed, highly available platform",
   "main": "bin/server.js",
   "repository": {
