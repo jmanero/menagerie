@@ -1,19 +1,27 @@
 {
   "name": "cranial",
   "version": "0.0.2",
+  "author": "John Manero <john.manero@gmail.com>",
   "description": "Distributed, highly available discovery and environment data service for your distributed, highly available platform",
   "main": "bin/server.js",
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:jmanero/cranial.git"
+  "dependencies": {
+    "async": "0.9.x",
+    "aws-sdk": "2.1.x",
+    "bunyan": "1.2.x",
+    "nconf": "0.7.x",
+    "node-etcd": "3.0.x",
+    "restify": "2.8.x"
   },
   "keywords": [
     "distributed",
     "service",
     "discovery"
   ],
-  "author": "John Manero <john.manero@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:jmanero/cranial.git"
+  },
   "bugs": {
     "url": "https://github.com/jmanero/cranial/issues"
   },
