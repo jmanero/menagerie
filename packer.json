@@ -1,0 +1,36 @@
+{
+  "variables": {
+    "AMI_ID": "",
+    "NAME": "node-serivce",
+    "DESCRIPTION": "Template NodeJS Serivce",
+    "VERSION": "",
+    "BUILD_NUMBER": "",
+    "BUILD_DATE": "",
+    "BUILD_URL": ""
+  },
+  "builders": [{
+    "type": "amazon-chroot",
+    "ami_name": "{{user `NAME`}}-{{user `VERSION`}}-{{user `BUILD_NUMBER`}}",
+    "source_ami": "{{user `AMI_ID`}}",
+    "ami_virtualization_type": "hvm",
+    "ami_description": "{{user `DESCRIPTION`}}",
+    "tags": {
+      "service": "{{user `NAME`}}",
+      "version": "{{user `VERSION`}}-{{user `BUILD_NUMBER`}}",
+      "build_date": "{{user `BUILD_DATE`}}",
+      "build_url": "{{user `BUILD_URL`}}"
+    }
+  }],
+  "provisioners": [{
+    "type": "shell",
+    "inline": "sudo mkdir /var/chef && sudo chown ubuntu:ubuntu /var/chef"
+  }, {
+    "type": "chef-solo",
+    "run_list": ["node-service::default"],
+    "cookbook_paths": ["./cookbooks"],
+    "data_bags_path": "./data_bags",
+    "environments_path": "./environments",
+    "chef_environment": "_default",
+    "staging_directory": "/var/chef"
+  }]
+}
