@@ -13,7 +13,6 @@ cookbooks.tar.gz
 Berksfile.lock
 
 # Bundler
-bin/*
 .bundle/*
 
 VERSION
