@@ -1,5 +1,22 @@
+*~
+*#
+.#*
+\#*#
+.*.sw[a-z]
+*.un~
+pkg/
 .DS_Store
-node_modules
 
+.bundle
+.bookshelf
+.vagrant
+Berksfile.lock
+/cookbooks
+VERSION
+package.json
+metadata.json
+vendor
+node_modules
 data
-etcd-*
+
+/etcd-*

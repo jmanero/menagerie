@@ -1,7 +1,6 @@
-Cranial
+Menagerie
 =======
-A distributed, highly available discovery and environment data service for your
-distributed, highly available platform.
+A distributed, highly available resource directory service for your distributed, highly available platform.
 
 ## License
 The MIT License (MIT)
