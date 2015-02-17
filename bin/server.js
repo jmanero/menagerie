@@ -1,42 +1,25 @@
-var Restify = require('restify');
+var Express = require('express');
+var FS = require('fs');
+var HTTP = require('http');
+
 require('../lib/config');
 
-var Discover = require('../lib/control/discover');
-var Environment = require('../lib/control/environment');
+var app = Express();
+var server = HTTP.createServer(app);
 
-var server = Restify.createServer({
-  log: Logger,
-  name: Config.get('name'),
-  version: Config.get('version')
-});
+app.use(require('body-parser').json());
 
-server.use(Restify.CORS());
-server.use(Restify.dateParser());
-server.use(Restify.queryParser());
-server.use(Restify.bodyParser({
-  mapParams: false
-}));
+require('../lib/control/directory').attach(app);
 
-server.use(Restify.requestLogger());
-// server.use(function(req, res, next) {
-//   req.log.debug(req.method + ' ' + req.url, {
-//     method: req.method,
-//     path: req.url,
-//     client: req.socket.remoteAddress + ':' + req.socket.remotePort
-//   });
-//   next();
-// });
+try { // Try to clean up existing file handle
+  if (FS.existsSync(Config.get('service:listen'))) {
+    console.log('Trying to remove existing socket file ' + Config.get('service:listen'));
+    FS.unlinkSync(Config.get('service:listen'));
+  }
+} catch(e) {
+  console.log('Error cleaning up socket file');
+}
 
-// server.on('after', Restify.auditLogger({
-//   log: Logger.child({
-//     type: 'audit'
-//   })
-// }));
-
-Discover.attach(server);
-Environment.attach(server);
-
-Logger.info('Starting service ' + Config.get('name') + '@' + Config.get('version'));
-server.listen(Config.get('server:listen'), function() {
-  Logger.info('Listening on port ' + Config.get('server:listen'));
+server.listen(Config.get('service:listen'), function() {
+  console.log('Listening for requests on ' + Config.get('service:listen'));
 });
