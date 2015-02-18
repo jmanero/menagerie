@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: cookbook
+# Cookbook Name:: menagerie
 # Recipe:: default
 #
 # The MIT License (MIT)
