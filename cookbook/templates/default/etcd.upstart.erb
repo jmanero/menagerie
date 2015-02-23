@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: menagerie
-# Attributes:: default
+# Template:: etcd.upstart.erb
 #
 # The MIT License (MIT)
 # =====================
@@ -23,24 +23,19 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-include_attribute 'etcd::default'
-include_attribute 'nodejs::default'
+author  "John Manero <john.manero@gmail.com>"
+description "etcd Database Service"
 
-## etcd Install/Configuration
-default['etcd']['trigger_restart'] = false
-default['etcd']['listen'] = node['ipaddress'] unless default['etcd'].include?('listen')
-default['etcd']['hostname'] = node['hostname'] unless default['etcd'].include?('hostname')
-default['etcd']['user'] = 'etcd'
-default['etcd']['group'] = 'etcd'
-default['etcd']['version'] = '2.0.3'
-default['etcd']['sha256'] = '0d4dd3ec5c3961433f514544ae7106676f313fe2fa7aa85cde0f2454f1a65b2f'
-default['etcd']['discovery'] = 'https://discovery.etcd.io/7b1f0ab0d1e832ac31d4f7947f1d2f05'
-default['etcd']['addr'] = '0.0.0.0:2379'
-default['etcd']['peer_addr'] = "#{ node['etcd']['listen'] }:2380"
+setuid <%= node['etcd']['user'] %>
+setgid <%= node['etcd']['group'] %>
 
-## NodeJS Install
-default['nodejs']['install_repo'] = false
-default['nodejs']['packages'] = ['nodejs']
+start on started networking
+stop on shutdown
 
-## Menagerie Install
-default['menagerie']['source'] = '/vagrant'
+console log
+exec /usr/local/bin/etcd -name <%= node['etcd']['hostname'] %>\
+  -discovery '<%= node['etcd']['discovery'] %>'\
+  -listen-client-urls http://<%= node['etcd']['addr'] %>\
+  -initial-advertise-peer-urls http://<%= node['etcd']['peer_addr'] %>\
+  -listen-peer-urls http://<%= node['etcd']['peer_addr'] %>\
+  -data-dir <%= node['etcd']['state_dir'] %>

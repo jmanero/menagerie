@@ -25,3 +25,65 @@
 # THE SOFTWARE.
 
 include_recipe 'apt::default'
+apt_repository 'nodejs' do
+  uri 'ppa:chris-lea/node.js'
+  distribution node['lsb']['codename']
+end
+
+## etcd Configuration
+group node['etcd']['group'] { system(true) }
+user node['etcd']['user'] do
+  gid node['etcd']['group']
+  home ::File.dirname(node['etcd']['state_dir'])
+  shell '/usr/sbin/nologin'
+  system true
+end
+
+directory node['etcd']['state_dir'] do
+  owner node['etcd']['user']
+  group node['etcd']['group']
+  recursive true
+end
+
+include_recipe 'etcd::binary_install'
+include_recipe 'etcd::_service'
+
+## Set permissions for etcd's home
+resources(:directory => ::File.dirname(node['etcd']['state_dir'])).tap do |resource|
+  resource.owner(node['etcd']['user'])
+  resource.group(node['etcd']['group'])
+end
+
+## Use our own etcd upstart template for etcd 2.0.x
+resources('template[/etc/init/etcd.conf]').tap do |resource|
+  resource.cookbook('menagerie')
+  resource.source('etcd.upstart.erb')
+end
+
+## NodeJS and module dependencies
+include_recipe 'nodejs::nodejs'
+package 'build-essential'
+package 'uuid-dev'
+
+## TODO Fetch source
+
+nodejs_npm 'install' do
+  path node['menagerie']['source']
+  json true
+  notifies :start, 'service[menagerie]'
+end
+
+template '/etc/init/menagerie.conf' do
+  source 'menagerie.upstart.erb'
+end
+
+service 'menagerie' do
+  action [:start, :enable]
+end
+
+## Toggle ETCd restarts
+first_run_complete = ::File.join(Chef::Config['cache_path'], 'first_run_complete')
+file(first_run_complete) { action :touch }
+
+node.default['etcd']['trigger_restart'] = ::File.exist(first_run_complete) rescue false
+Chef::Log.info("etcd service restart #{ node['etcd']['trigger_restart'] ? 'enabled' : 'disabled' }")
