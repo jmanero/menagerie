@@ -34,7 +34,6 @@ default['etcd']['user'] = 'etcd'
 default['etcd']['group'] = 'etcd'
 default['etcd']['version'] = '2.0.3'
 default['etcd']['sha256'] = '0d4dd3ec5c3961433f514544ae7106676f313fe2fa7aa85cde0f2454f1a65b2f'
-default['etcd']['discovery'] = 'https://discovery.etcd.io/7b1f0ab0d1e832ac31d4f7947f1d2f05'
 default['etcd']['addr'] = '0.0.0.0:2379'
 default['etcd']['peer_addr'] = "#{ node['etcd']['listen'] }:2380"
 
