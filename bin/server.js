@@ -9,7 +9,9 @@ var server = HTTP.createServer(app);
 
 app.use(require('body-parser').json());
 
+require('../lib/control/cookbook').attach(app);
 require('../lib/control/directory').attach(app);
+require('../lib/control/status').attach(app);
 
 try { // Try to clean up existing file handle
   if (FS.existsSync(Config.get('service:listen'))) {
