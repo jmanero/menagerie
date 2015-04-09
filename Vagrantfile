@@ -15,22 +15,21 @@ Vagrant.configure('2') do |config|
   config.berkshelf.berksfile_path = './cookbook/Berksfile'
   config.cache.scope = :box if Vagrant.has_plugin?('vagrant-cachier')
 
-  3.times do |i|
-    config.vm.define "node-#{ i }" do |node|
-      node.vm.hostname = "menagerie-#{ i }"
-      node.vm.network :private_network, :ip => "192.168.254.#{ i + 2 }"
+  config.vm.hostname = 'menagerie-0'
+  # config.vm.network :private_network, :ip => "192.168.254.#{ i + 2 }"
+  config.vm.network :forwarded_port, :host => 2381, :guest => 2381
+  config.vm.network :forwarded_port, :host => 2379, :guest => 2379
 
-      node.vm.provision :chef_solo do |chef|
-        chef.json = {
-          :etcd => {
-            :listen => "192.168.254.#{ i + 2 }"
-          },
-          :menagerie => {
-            :source => '/vagrant'
-          }
-        }
-        chef.run_list = ['recipe[menagerie::default]']
-      end
-    end
+  config.vm.provision :chef_solo do |chef|
+    chef.json = {
+      :etcd => {
+        # :listen => "192.168.254.#{ i + 2 }"
+        :listen => '0.0.0.0'
+      },
+      :menagerie => {
+        :source => '/vagrant'
+      }
+    }
+    chef.run_list = ['recipe[menagerie::default]']
   end
 end
