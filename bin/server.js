@@ -7,6 +7,23 @@ require('../lib/config');
 var app = Express();
 var server = HTTP.createServer(app);
 
+// Convert true, false, and null to primatives
+app.use(function(req, res, next) {
+  Object.keys(req.query).forEach(function(key) {
+    switch(req.query[key]) {
+      case 'true':
+        req.query[key] = true;
+        break;
+      case 'false':
+        req.query[key] = false;
+        break;
+      case 'null':
+        req.query[key] = null;
+        break;
+    }
+  });
+  next();
+});
 app.use(require('body-parser').json());
 
 require('../lib/control/cookbook').attach(app);
