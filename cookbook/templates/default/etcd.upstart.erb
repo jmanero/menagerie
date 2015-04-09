@@ -33,9 +33,12 @@ start on started networking
 stop on shutdown
 
 console log
-exec /usr/local/bin/etcd -name <%= node['etcd']['hostname'] %>\
-  -discovery '<%= node['etcd']['discovery'] %>'\
-  -listen-client-urls http://<%= node['etcd']['addr'] %>\
+exec /usr/local/bin/etcd\
+  <% if node['etcd'].key?('discovery') && !node['etcd']['discovery'].empty? -%>
+  -name <%= node['etcd']['hostname'] %>\
+  -discovery '<%= node['etcd']['discovery'] -%>'\
   -initial-advertise-peer-urls http://<%= node['etcd']['peer_addr'] %>\
+  <% end %>
+  -listen-client-urls http://<%= node['etcd']['addr'] %>\
   -listen-peer-urls http://<%= node['etcd']['peer_addr'] %>\
   -data-dir <%= node['etcd']['state_dir'] %>
